@@ -75,10 +75,10 @@ def main():
 
         # Asking for valid input until valid currency entered. keys() method returns list/array of key values from currencies dictionary/object.
         while convert_from not in currencies.keys():
-            convert_from = input("\nEnter a valid currency acronym to convert from: ")
+            convert_from = input("\nEnter a valid currency acronym to convert from: ").upper()
         # Asking for valid input until valid currency entered again.    
         while convert_to not in currencies.keys():
-            convert_to = input("Enter a valid currency acronym to convert to: ")
+            convert_to = input("Enter a valid currency acronym to convert to: ").upper()
 
         # Calling the one to one function I made that prints the result of converting one currency to another. 
         one_to_one(convert_from, convert_to)
