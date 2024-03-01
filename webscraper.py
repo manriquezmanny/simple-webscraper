@@ -3,6 +3,7 @@
 ### Imports ###
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+import json
 
 ### GLOBAL VARIABLES ###
 # Added valid currencies i'd like this app to be able to check. If anyone clones this repository, feel free to add any I missed.
@@ -31,7 +32,12 @@ def one_to_many(convert_from, convert_to_many):
         scraped_data = scrape_data(url)
         # Formatting data with my format_data function and printing it.
         formatted_data = format_data(scraped_data)
+        # Updates value in currencies
+        currencies[currency] = formatted_data
         print(formatted_data)
+    # Writes currencies with updated values to new file.
+    with open("currencies.json", "w") as fp:
+        json.dump(currencies, fp)
 
 
 # Function to convert one currency to another currency.
