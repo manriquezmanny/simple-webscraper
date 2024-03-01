@@ -1,7 +1,6 @@
 """ Website I am Scraping: xe.com """
 
 ### Imports ###
-import math as Math
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
