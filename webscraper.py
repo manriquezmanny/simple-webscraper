@@ -1,4 +1,7 @@
+""" Website I am Scraping: xe.com """
+
 ### Imports ###
+import math as Math
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
@@ -10,9 +13,13 @@ currencies = {
                 "CNY": True, "CUP": True, "DOP": True, "EGP": True, "GBP": True,
                 "MXN": True, "NZD": True, "RUB": True, "KRW": True, "RON": True   
              }
-
-# Specify what currencies you'd like to convert to when you want to convert to many currencies here.
-convert_to_many = ["EUR", "GBP", "MXN", "CNY", "USD"] 
+"""
+Specify what currencies you'd like to convert to, when you want to convert to many currencies,
+in the convert_to_many variable below. It is currently set to all key values in currencies variable above.
+You can set the convert_to_many variable to a list/array of only the currencies you want to convert if you want. 
+Make sure Each acronym in the list/array is a valid acronym with all letters uppercased.
+"""
+convert_to_many = currencies.keys()
 
 
 ### FUNCTIONS ###
@@ -21,36 +28,52 @@ def one_to_many(convert_from, convert_to_many):
     for currency in convert_to_many:
         # Setting up URL with f-string formatting. Opening URL page. Reading url to get HTML. 
         url = f"https://www.xe.com/currencyconverter/convert/?Amount=1&From={currency}&To={convert_from}"
-        page = urlopen(url)
-        html = page.read()
-
-        # Instancing a soup object with html and html.parser as arguments.
-        soup = BeautifulSoup(html, "html.parser")
-        # Scraping each converted currency from list.
-        print(soup.find_all("p")[3].get_text())
+        # Getting Scraped data with my scraped_data function.
+        scraped_data = scrape_data(url)
+        # Formatting data with my format_data function and printing it.
+        formatted_data = format_data(scraped_data)
+        print(formatted_data)
 
 
 # Function to convert one currency to another currency.
 def one_to_one(convert_from, convert_to):
     # Setting up URL with f-string formatting. Opening URL page. Reading url to get HTML. 
     url = f"https://www.xe.com/currencyconverter/convert/?Amount=1&From={convert_to}&To={convert_from}"
+    # Getting scraped data with my scrape_data function.
+    scraped_data = scrape_data(url)
+
+    # Formatting scraped data with my format_data function and printing it.
+    formatted_data = format_data(scraped_data)
+    print(formatted_data)
+
+
+# Function to format conversion to print.
+def format_data(string):
+    # Splitting the unrounded string by the default space delimiter.
+    str_list = string.split()
+    # Getting rid of commas so that float() function doesn't fail on next line.
+    str_list[3] = str(str_list[3]).replace(",", "")
+    # Getting just the rate, turning it into a float, rounding it, and turning back into a string.
+    rate = str(round(float(str_list[3]), 2))
+    # Setting up my formatted string just how I want it with an f-string.
+    formatted_str = f"1 {str_list[1]} = {rate} {str_list[4]}"
+    # Returning formatted string.
+    return formatted_str
+
+
+# Function to scrape the data I need.
+def scrape_data(url):
+    # Opening url
     page = urlopen(url)
+    # Reading oppened url.
     html = page.read()
 
-    # Instancing a soup object with html and html.parser as arguments.
+    # Instancing a soup object with html string from url and html.parser as arguments.
     soup = BeautifulSoup(html, "html.parser")
-    # Scraping converted currency.
+    # Getting the converted currency from p tag in HTML.
     scraped_data = soup.find_all("p")[3].get_text()
-
-    # Calling split string method on scraped data. Default delimiter is space.
-    scraped_data_split = scraped_data.split()
-    # The rate is stored on the 3rd index of the scraped_data_split list.
-    # Turning it into a float, rounding it to 2 decimal places, and turning it back into a string.
-    rate = str(round(float(scraped_data_split[3]), 2))
-
-    # Formatting the final string I want to print.
-    formatted_data = f"1 {scraped_data_split[1]} = {rate} {scraped_data_split[4]}"
-    print(formatted_data)
+    # Returns scraped data.
+    return scraped_data
 
 
 ### MAIN FUNCTION ###
@@ -89,12 +112,10 @@ def main():
         convert_from = "invalid"
         # Asking for input until valid input recieved. Currencies.keys() returns key values from currencies dictionary/object.
         while convert_from not in currencies.keys():
-            convert_from = input("Enter a valid currency acronym to convert from: ")
+            convert_from = input("\nEnter a valid currency acronym to convert from: ").upper()
         # Calling the one_to_many function I made that converts one currency to many and prints it to terminal.
         one_to_many(convert_from, convert_to_many)
 
-
-# This is how you do a multi line comment...
 """
 The boiler plate code below is so that the main function will only run if this file is the
 entry point of my program. In other words, if I import this module to another script, the main 
