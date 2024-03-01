@@ -93,5 +93,12 @@ def main():
         # Calling the one_to_many function I made that converts one currency to many and prints it to terminal.
         one_to_many(convert_from, convert_to_many)
 
+
+# This is how you do a multi line comment...
+"""
+The boiler plate code below is so that the main function will only run if this file is the
+entry point of my program. In other words, if I import this module to another script, the main 
+function will not call and i'll still be able to access the functions I built in that other script.
+"""
 if __name__ == "__main__":
     main()
